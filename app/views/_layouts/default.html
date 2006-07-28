@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+	<head>
+		<meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+		<meta http-equiv="Content-Language" content="en-us" />
+		
+		<title>{{$cfg.application_title|default:"Administration Area"}} | {{$pagetitle|default:"Welcome"}}</title>
+		
+		<meta name="ROBOTS" content="ALL" />
+		<meta http-equiv="imagetoolbar" content="no" />
+		<meta name="MSSmartTagsPreventParsing" content="true" />
+		
+		{{stylesheet_link_tag href="application.css"}}
+		{{javascript_include_tag src="defaults"}}
+
+ 		<!-- KLUDGE:: Win IE 5 -->
+ 		<!-- corrects the unsightly Flash of Unstyled Content. See http://www.bluerobot.com/web/css/fouc.asp for more info -->
+ 		<script type="text/javascript"></script>
+ 		<!-- END KLUDGE:: -->
+        
+        <base href="{{$globals.base_url}}" />
+	</head>
+	
+	<body id="{{$controller.controller_name}}" class="{{$controller.action_name}}">
+	
+		{{$content_for_layout}}
+    
+	</body>
+</html>
+

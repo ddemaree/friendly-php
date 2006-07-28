@@ -1,0 +1,201 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+       "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+
+<head>
+  <meta http-equiv="content-type" content="text/html;charset=UTF-8" />
+  <title>Getting Started with Friendly</title>
+  <style>
+    h1 { font-family: "Lucida Grande", verdana, arial, helvetica, sans-serif; font-size: 22px; font-weight: bold; }
+  div.writeboardbody { font-family: "Lucida Grande", verdana, arial, helvetica, sans-serif; font-size: 14px; line-height: 19px; color: #000; }
+  div.writeboardbody h1 { font-size: 130%; }
+  div.writeboardbody h2 { font-size: 100%; }
+  div.writeboardbody h3 { font-size: 100%; }
+  </style>
+</head>
+
+<body bgcolor="#FFFFFF">
+
+<h1>Getting Started with Friendly</h1>
+
+<div class="writeboardbody">
+  <h2>Getting Started with Friendly</h2>
+
+
+	<p style="font-style:italic;">This information should be accurate as of the Friendly 1.0 Developer Preview release. If you have any problem following these instructions, please <a href="mailto:help@friendlyphp.org">send us a message.</a></p>
+
+
+	<h3 class="step_head">Step 1: Download the latest Friendly distribution.</h3>
+
+
+	<p>The latest official build of Friendly will always be available on <a href="/downloads/">the main Downloads page.</a> Official Friendly builds are always distributed in .zip format.</p>
+
+
+	<p>You can also <a href="/downloads/edge">get the latest &#8216;edge&#8217; version of Friendly via Subversion.</a> Please be aware, though, that &#8220;edge&#8221; versions of Friendly may be undocumented, and features may be subject to change at any moment. We try to maintain ongoing backward compatibility with preview or release versions of Friendly (from 1.0 Developer Preview onward), so those are likely to provide the smoothest development experience.</p>
+
+
+	<h3 class="step_head">Step 2: Unpack the zip file and begin setting up your project</h3>
+
+
+	<p>Once you&#8217;ve unzipped the Friendly distribution you&#8217;ll find a folder inside called <code>My_Friendly_Project</code>. Feel free to rename that folder to whatever you like&#8212;this folder contains all the files you&#8217;ll need to publish to your web server.</p>
+
+
+	<p>The <code>My_Friendly_Project</code> folder will contain a series of files and subfolders, containing the Friendly core libraries and the various <span class="caps">PHP</span> scripts for <a href="/about/glossary#bootstrap">bootstrapping</a> and running the framework. This folder also includes an example <a href="/about/glossary#controller">controller class</a> and <a href="/about/glossary#view">view template</a> you can use to begin building your application.</p>
+
+
+	<p>To configure your application, open the file <code>config/config.yml</code> in a text editor and make whatever changes are necessary. In most situations you should only need to update the settings relevant to connecting to your database, which are kept in an array called <code>db</code>. The config file is commented and should be fairly self-explanatory, but if you need more guidance, you can <a href="/docs/reference/config">learn more about configuring Friendly here</a>.</p>
+
+
+	<h3 class="step_head">Step 3: Deploying Friendly To Your Web Server</h3>
+
+
+	<p>Everything you need to run your first Friendly app is included in the distribution, and you can get started with just the minimal configuration outlined above. Before you can upload Friendly to your web server, however, you have to figure out a couple of things.</p>
+
+
+	<h4>Does your server meet the minimum requirements?</h4>
+
+
+	<p>First, you need to make sure your server meets the minimum requirements to run Friendly:</p>
+
+
+	<ul>
+	<li>Apache 1.3 or 2.0 with <code>mod_rewrite</code> and the ability to use <code>.htaccess</code> files</li>
+		<li><span class="caps">PHP 4</span>.2.0 or later with MySQL support</li>
+		<li>MySQL 4.0 or later</li>
+	</ul>
+
+
+	<p>If you&#8217;re not certain whether your hosting environment meets these requirements, you can contact your web hosting provider&#8217;s customer/technical support to find out. These software packages are quite common, so most hosting providers should be able to support Friendly.</p>
+
+
+	<h4>Will this application exist in the site&#8217;s document root, or in a subdirectory?</h4>
+
+
+	<p>Every website lives on the server inside of a directory called the <em>document root</em>, which corresponds to the root level of your site&#8217;s domain name. For example, a file called <code>mypage.html</code> located inside your document root would be publicly viewable at the <span class="caps">URL </span><code>http://mydomain.tld/mypage.html</code>.</p>
+
+
+	<p><strong>If you want your entire website to be a Friendly app</strong>, you&#8217;ll need to upload the contents of your Friendly project folder to your document root folder. On servers where you can change which directory is the document root, you can optionally just upload the entire project folder and simply set that folder as your document root. For added security in such environments you can even set your Friendly app&#8217;s <code>public/</code> folder as your document root, which will help protect your application code and configuration files by storing them away from the publicly viewable document root. Those files are usually protected by <span class="caps">URL</span> rewriting feature used by Friendly to route requests, but this adds an extra level of protection.</p>
+
+
+	<p><strong>If you want only part of your website to be a Friendly app,</strong> upload the entire project folder to your document root, or to any other part of your website. Your Friendly app will be accessible as a subdirectory of your website. For example, if your project folder is called <code>cars</code> and you upload it to your document root, you can access your Friendly app at <code>http://mydomain.tld/cars/</code>.</p>
+
+
+	<p>At the time of this writing there is a bug in Friendly 1.0 that sometimes causes problems when Friendly apps are installed in subdirectories rather than the document root, so in cases like this you may want to add the following directive to your config file:</p>
+
+
+	<blockquote>
+		<p><code>base_url: http://mydomain.tld/cars/</code></p>
+	</blockquote>
+
+
+	<p>This will override Friendly&#8217;s automatically-generated URLs to ensure that links and redirects behave the way you expect them to.</p>
+
+
+	<h4>Make sure you have the <code>.htaccess</code> file</h4>
+
+
+	<p>Friendly&#8217;s ability to read &#8220;clean URLs&#8221; like <code>http://mydomain.tld/home/index</code> and use them to route requests to the appropriate handler methods (as detailed below) requires that the included file called <code>.htaccess</code> be present in the root level of your app. Some operating systems (notably Mac <span class="caps">OS X</span>) treat files whose names begin with a dot as invisible, so you may have trouble uploading that particular file if you&#8217;re uploading the Friendly files by drag and drop.</p>
+
+
+	<p>If you get &#8220;404 Not Found&#8221; errors when trying to access your application, check to make sure the <code>.htaccess</code> file is present. If it&#8217;s not there, just change the name of the file called <code>HTACCESS_COPY</code> to <code>.htaccess</code> and try again.</p>
+
+
+	<h3 class="step_head">Step 4. Starting to Code</h3>
+
+
+	<p>Friendly is based around a pattern of software development known as <acronym title="model-view-controller">MVC</acronym>, in which code is separated into <strong>models</strong> (which work with your data, in this case the information stored in your <span class="caps">SQL</span> database), <strong>controllers</strong> (which respond to requests from users and prepare data for output to the browser) and <strong>views</strong> (templates for how that data should be displayed).</p>
+
+
+	<h4>Models: Getting to your data</h4>
+
+
+	<p>Friendly provides a simple database abstraction layer, FriendlyDB, for connecting to database and asking it for information. For example, rather than writing a ten-line series of statements for sending a <span class="caps">SQL</span> query to the database, retrieving the rows you asked for and formatting them into a <span class="caps">PHP</span> array, FriendlyDB provides a single function:</p>
+
+
+	<blockquote>
+		<p><code>$array = find_by_sql('SELECT * FROM my_table');</code></p>
+	</blockquote>
+
+
+	<p><a href="/docs/reference/friendly_db">A full reference to the FriendlyDB <span class="caps">API</span> can be found here.</a> Additionally, you can use any of <span class="caps">PHP</span>&#8217;s built-in MySQL functions (such as <code>mysql_query</code>) from any Friendly controller.</p>
+
+
+	<p>And by the way, a more sophisticated <a href="http://www.martinfowler.com/eaaCatalog/activeRecord.html">Active Record-inspired</a> method for working with your data is currently in development for inclusion in an upcoming Friendly release. Stay tuned.</p>
+
+
+	<h4>Controllers: Where the magic happens</h4>
+
+
+	<p>Unlike many <span class="caps">PHP</span> applications, Friendly apps are organized into classes called <strong>controllers</strong>, which contain methods (called <strong>actions</strong>) for handling specific requests. In terms of a traditional static website, think of the controller as being like a folder, while the action is like a single page.</p>
+
+
+	<p>Friendly parses the <span class="caps">URL</span> requested by the user to determine which controller class and action method to run. For example, if the user clicks on a link such as</p>
+
+
+	<blockquote>
+		<p>http://myawesomesite.com/blog/article/22</p>
+	</blockquote>
+
+
+	<p>then Friendly infers that it should look for a file in the <code>app/controllers</code> directory called <code>blog_controller.php</code>, which should contain a class called <code>BlogController</code>, which should be descended from a built-in class called <code>FriendlyController</code>. If it can find that file and load that class, it then checks to see if that class has a method called <code>article</code>; if so, Friendly runs that method. If not, you&#8217;ll see an error message.</p>
+
+
+	<p>The code to create this class and controller looks something like this:</p>
+
+
+<blockquote><code><pre>
+class BlogController extends FriendlyController {
+    function articles() {
+        $this-&gt;article = find_one($_GET['params'][1]);
+        $this-&gt;article-&gt;html = textilize($this-&gt;article-&gt;text);
+    }
+}
+</pre></code></blockquote>
+
+	<p>Instance variables (such as <code>$this-&gt;article</code>) are automatically passed to your view template in the next step, while local variables (like <code>$jerks</code>) are not. This makes it easy to control what data your users can and cannot see with minimal code and minimal hassle.</p>
+
+
+	<h4>Views: Put on a pretty face</h4>
+
+
+	<p>Every action has its own view template, which is an <span class="caps">HTML</span> file that includes some special template tags to indicate where data from your controller should be inserted. Templates are kept in the <code>app/views</code> directory, in which each controller should have its own subdirectory. View templates for the <code>blog</code> controller from the example above would, therefore, be stored in <code>app/views/blog</code>. Each action gets its own view template, named after the action method. For example, an <span class="caps">HTML</span> template for that <code>articles</code> method would be named <code>articles.html</code>.</p>
+
+
+	<p>Templates are <span class="caps">HTML</span> files that include some special template tags to indicate where data from your controller should be inserted. <span class="caps">HTML</span> templates in Friendly are powered by <a href="http://smarty.php.net/">Smarty</a>, a popular template engine used on many a website, with <a href="http://smarty.php.net/manual/">excellent documentation located on their website.</a>.</p>
+
+
+	<p>As I noted earlier, instance variables from your action method automatically become template variables for use in your view. For example, the variable <code>$this-&gt;article</code> we assigned above is automatically available from your template as <code>{{$article}}</code>. Let&#8217;s say that <code>$article</code> is an object containing data from a particular weblog entry, so you might design this <span class="caps">HTML</span> template for it:</p>
+
+
+<blockquote><code><pre>
+&lt;dl id="entry"&gt;
+    &lt;dt class="entry-title"&gt;{{$article-&gt;title}}&lt;/dt&gt;
+    &lt;dd class="entry-dateline"&gt;
+        {{$article-&gt;date|date_format:"%M %d, %Y"}}
+    &lt;/dd&gt;
+    &lt;dd class="entry-text"&gt;
+        {{$article-&gt;html}}
+    &lt;/dd&gt;
+&lt;/dl&gt;
+</pre></code></blockquote>
+
+	<p>In addition to individual templates for each action, you can also set up a special global template called a <strong>layout</strong> that&#8217;s displayed on every page. The <span class="caps">HTML</span> output from the action is assigned to a variable called <code>{{$content_for_layout}}</code>, and then inserted into the layout. Which would look something like this:</p>
+
+
+<blockquote><code><pre>
+&lt;html&gt;
+    &lt;head&gt;
+        &lt;title&gt;{{$cfg.application_title}}&lt;/title&gt;
+    &lt;/head&gt;
+    &lt;body&gt;
+        {{$content_for_layout}}
+    &lt;/body&gt;
+&lt;/html&gt;
+</pre></code></blockquote>
+
+	<p>This makes it easy to keep elements that appear on every page (like your company logo or a navigation bar) separate from elements that are only needed for a single page/action.</p>
+</div>
+
+</body>
+</html>

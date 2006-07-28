@@ -1,0 +1,11 @@
+# db:
+#    adapter: mysql
+#    host: localhost
+#    database: friendly
+#    username: root
+#    password:
+
+# session:
+#    name: friendly_session
+#    domain: domain_for_app.tld
+#    expire: 36000

@@ -1,0 +1,6 @@
+RewriteEngine On
+RewriteRule ^assets/.*$ - [QSA,L]
+RewriteRule ^$ index.html [QSA]
+RewriteRule ^([^.]+)$ $1.html [QSA]
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule ^(.*)$ _index.php [QSA,L]

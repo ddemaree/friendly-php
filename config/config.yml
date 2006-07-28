@@ -1,0 +1,40 @@
+##	Friendly YAML Configuration File
+##	Revised 15 February 2006 - David Demaree
+
+# The items in this file are available throughout Friendly.
+# For example, the item below is available in any controller
+# as $GLOBALS['cfg']['application_title], or in any template
+# as {$cfg.application_title}
+
+application_title: My Awesome Friendly App	
+
+
+# You can put any variables you want in here, and some are
+# used by Friendly to enable and/or configure certain
+# features. The most common "magic" config items are listed
+# below, and you can find a full list with explanations by
+# visiting <http://friendlyphp.org/docs/reference/config>
+
+
+# DATABASE SETTINGS: Friendly is designed to use a single database
+# by default, containing all tables and rows to be used by this
+# application. To enable database access for this Friendly app
+# just edit the settings below to match your environment.
+
+db:
+   adapter: mysql
+   host: localhost
+   database: friendly
+   username: root
+   password:
+
+
+# ENVIRONMENTS: Friendly can load in additional configuration
+# settings specific to a given server environment.
+# For more information about environments, visit
+# <http://friendlyphp.org/docs/reference/environments>
+# 
+# To use an environment file called production.yml, just set the
+# `environment` directive below to 'production' and uncomment it.
+#
+# environment: development
