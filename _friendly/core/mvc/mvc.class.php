@@ -58,9 +58,10 @@ class FriendlyMVC {
 			$GLOBALS['base_path'] = implode("/",$_base_path);
 		}
 		
+		$_protocol = $_SERVER['HTTPS'] == 'on' ? "https" : "http";
 		
 		#	Set default environment var for the base url
-		$GLOBALS['http_host'] 		=  "http://".$_SERVER['SERVER_NAME']."/";
+		$GLOBALS['http_host'] 		=  "{$_protocol}://".$_SERVER['SERVER_NAME']."/";
 		$GLOBALS['base_url']  		=  $GLOBALS['http_host'].$GLOBALS['base_path'].($GLOBALS['base_path'] ? "/" : "");
 		$GLOBALS['cfg']['base_url'] =& $GLOBALS['base_url'];
 		
