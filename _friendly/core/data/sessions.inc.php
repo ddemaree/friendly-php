@@ -2,11 +2,24 @@
 
 function session_open() {
     global $cfg;
+	global $DB;
 	
-	session_name('FRIENDLY_SESS');
-	session_set_cookie_params((3200*24),"/");
-	session_set_save_handler("friendly_session_open", "friendly_session_close", "friendly_session_read", "friendly_session_write", "friendly_session_destroy", "friendly_session_gc");
-    session_start();
+	$_opts = array(
+		'name' 				=> 'FRIENDLY_SESS',
+		'expires'     		=> '86400',
+		'path'		  		=> '/',
+		'domain'	  		=> $_SERVER['SERVER_NAME'],
+		'storage_method'	=> 'db'
+	);
+	$_opts = array_merge($_opts, $cfg['session']);
+	
+	session_name($_opts['name']);
+	session_set_cookie_params($_opts['expires'],$_opts['path'],$_opts['domain']);
+	
+	if(!$_opts['storage_method'] == 'db')
+		session_set_save_handler("friendly_session_open", "friendly_session_close", "friendly_session_read", "friendly_session_write", "friendly_session_destroy", "friendly_session_gc");
+
+	session_start();
 }
 
 function friendly_session_open($save_path, $session_name) {

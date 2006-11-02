@@ -1,5 +1,5 @@
 ##	Friendly YAML Configuration File
-##	Revised 15 February 2006 - David Demaree
+##	Revised 2 November 2006 - David Demaree
 
 # The items in this file are available throughout Friendly.
 # For example, the item below is available in any controller
@@ -27,6 +27,18 @@ db:
    database: friendly
    username: root
    password:
+
+
+# SESSION SETTINGS: By default Friendly stores session data in a MySQL
+# database called `_friendly_sessions`. You can disable DB sessions by
+# changing the `storage_method` key below to any value besides 'db'.
+
+session:
+   storage_method: db
+   name: FRIENDLY_SESS
+   expires: 86400
+   path: /
+   
 
 
 # ENVIRONMENTS: Friendly can load in additional configuration

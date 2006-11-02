@@ -34,7 +34,7 @@
 
 
 #	Hello, my name is Friendly. My version is:
-	define(FRIENDLY_VERSION,"1.0 Developer Preview");
+	define(FRIENDLY_VERSION,"1.0d10");
 	
 
 #	Infer path to app's public directory (i.e., the location of the dispatcher)
@@ -91,7 +91,10 @@
 
 #	Instantiate useful classes
     $smarty = smarty_start();
-	$DB = new FriendlyDB($cfg['db']);
+
+#	Instantiate the DB connection if it's been configured
+	if(!empty($cfg['db']['adapter']))
+		$DB = new FriendlyDB($cfg['db']);
 
 #   Open a session
     session_open();
