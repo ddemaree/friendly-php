@@ -8,8 +8,9 @@ class FriendlyController {
 	function _init() {
 		$cfg =& $GLOBALS['cfg'];
 		
-		if(!isset($this->_layout) or $this->_layout == '')
-			$this->_layout = "default";
+		## Removed default layout assignment
+		// if(!isset($this->_layout) or $this->_layout == '')
+		// 	$this->_layout = "default";
 			
 		$this->_controller = preg_replace("/(.*)_controller$/","$1",underscore(get_class($this)));
 	}
