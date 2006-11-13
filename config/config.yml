@@ -27,7 +27,20 @@ db:
    database: friendly
    username: root
    password:
-
+       
+      
+# TEMPLATE COMPILE FOLDER: Friendly uses Smarty, a popular
+# compiling template engine, to generate the HTML for your
+# application. Smarty needs to compiles your templates into
+# executable PHP code. By default, Friendly uses your server's
+# /tmp directory for compiled templates. It will also automat-
+# ically use the `cache` directory inside your Friendly app
+# folder if it's writeable by PHP. If you cannot write to /tmp
+# on your server, you must either make the `cache` folder
+# writeable or specify another writeable directory using the
+# compile_dir config option below.
+# 
+# compile_dir: cache/
 
 # SESSION SETTINGS: By default Friendly stores session data in a MySQL
 # database called `_friendly_sessions`. You can disable DB sessions by
