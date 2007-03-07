@@ -1,12 +1,13 @@
 ##	Friendly YAML Configuration File
-##	Revised 2 November 2006 - David Demaree
+##	Revised 7 March 2007 - David Demaree
 
 # The items in this file are available throughout Friendly.
 # For example, the item below is available in any controller
 # as $GLOBALS['cfg']['application_title], or in any template
 # as {$cfg.application_title}
 
-application_title: My Awesome Friendly App	
+application_title: My Awesome Friendly App
+template_engine:   smarty
 
 
 # You can put any variables you want in here, and some are

@@ -35,6 +35,7 @@
 
 #	Hello, my name is Friendly. My version is:
 	define(FRIENDLY_VERSION,"1.0d10");
+	ini_set("display_errors",false);
 	
 
 #	Infer path to app's public directory (i.e., the location of the dispatcher)

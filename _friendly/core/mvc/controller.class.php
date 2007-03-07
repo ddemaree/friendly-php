@@ -7,21 +7,11 @@ class FriendlyController {
 	
 	function _init() {
 		$cfg =& $GLOBALS['cfg'];
-		
-		## Removed default layout assignment
-		// if(!isset($this->_layout) or $this->_layout == '')
-		// 	$this->_layout = "default";
-			
 		$this->_controller = preg_replace("/(.*)_controller$/","$1",underscore(get_class($this)));
 	}
 	
-	
 	// Prototype for setup method - platform-agnostic approach to constructors
-	function _setup() {
-		
-		
-		
-	}
+	function _setup() { }
 	
 	
 	// Don't like this name...to run after _setup but before the action method on each req

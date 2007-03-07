@@ -172,58 +172,49 @@ class FriendlyMVC {
 		// Find and run controller & action
 		if(file_exists($controlFile = $_app_path."controllers/{$_GET['c']}_controller.php")) {
 			load_file($controlFile);
-
 		
 			if(class_exists($cU = camelize($c)."Controller")) {
-				
-				// Instantiate controller class
 				$this->controller = new $cU();
-				
-				// Run _setups to get 
-				if(method_exists($this->controller,"_globalsetup"))
-					$this->controller->_globalsetup();
-				if(method_exists($this->controller,"_setup"))
-					$this->controller->_setup();
-				
-				// Run _init to commit any setup changes relevant to Magic Controllers
-				if(method_exists($this->controller,"_init"))
-					$this->controller->_init();
-				
-				// Running before filters as specified in the _setups
-				if(method_exists($this->controller,"_bootstrap"))
-					$this->controller->_bootstrap();
-					
-					
-					
-				// Run action method $a
-				if(method_exists($this->controller,$a)){
-					$this->controller->$a();
-		
-					#	Filter out internal stuff and send instance vars to Smarty
-						$_instance_vars = get_object_vars($this->controller);
-						foreach($_instance_vars as $_k => $_v) {
-							if($_k[0] == "_")
-								unset($_instance_vars[$_k]);
-						}
-						smarty_assign_array($_instance_vars);
-				}
-				
-				
-				
-				// Running after filters as specified in the _setups
-				if(method_exists($this->controller,"_teardown"))
-					$this->controller->_teardown();
-			
-				// User-level cleanup function?
-				if(method_exists($this->controller,"_cleanup"))
-					$this->controller->_cleanup();
-				
 			}
-			else
-				raise("The controller <code>{$c}</code> was not found.");
 		}
-		else
-			raise("The controller <code>{$c}</code> was not found");
+		else {
+			$this->controller = new ApplicationController;
+		}
+		
+		// Run _setups
+		if(method_exists($this->controller,"_globalsetup"))
+			$this->controller->_globalsetup();
+		if(method_exists($this->controller,"_setup"))
+			$this->controller->_setup();
+
+		// Run _init to commit any setup changes relevant to Magic Controllers
+		if(method_exists($this->controller,"_init"))
+			$this->controller->_init();
+
+		// Running before filters as specified in the _setups
+		if(method_exists($this->controller,"_bootstrap"))
+			$this->controller->_bootstrap();
+
+
+		// Run action method $a
+		if(method_exists($this->controller,$a)){
+			$this->controller->$a();
+		}
+		
+		#	Filter out internal stuff and send instance vars to Smarty
+		$this->template_vars = get_object_vars($this->controller);
+		foreach($this->template_vars as $_k => $_v) {
+			if($_k[0] == "_")
+				unset($this->template_vars[$_k]);
+		}
+
+		// Running after filters as specified in the _setups
+		if(method_exists($this->controller,"_teardown"))
+			$this->controller->_teardown();
+
+		// User-level cleanup function?
+		if(method_exists($this->controller,"_cleanup"))
+			$this->controller->_cleanup();
 	}
 	
 	
@@ -246,19 +237,22 @@ class FriendlyMVC {
 
 
 	function display() {		
-	   	global $cfg;
+	  global $cfg;
 		global $smarty;
 		
 		if($_SESSION['flash']) {
-        	smarty_assign('flash', $_SESSION['flash']['text']);
-        	smarty_assign('flash_class', $_SESSION['flash']['class']);
+			smarty_assign('flash', $_SESSION['flash']['text']);
+			smarty_assign('flash_class', $_SESSION['flash']['class']);
 			smarty_assign('problems',$_SESSION['flash']['problems']);
-        	unset($_SESSION['flash']);
-    	}
+			unset($_SESSION['flash']);
+   	}
 
-		if(!is_writeable($smarty->compile_dir))
-			raise("The compile directory <code>$smarty->compile_dir</code> is not writeable.");
+		if($cfg->template_engine == 'smarty') {
+			if(!is_writeable($smarty->compile_dir))
+				raise("The compile directory <code>$smarty->compile_dir</code> is not writeable.");
 			
+			smarty_assign_array($this->template_vars);
+		}	
 
 		$smarty->assign('session',$_SESSION);
 		$smarty->assign('cfg',$cfg);
@@ -270,10 +264,8 @@ class FriendlyMVC {
 		#  E.g.: app/controllers vs. app/admin/controllers
 		if(defined("FRIENDLY_APP_SPACE"))
 			$smarty->template_dir = FRIENDLY_APP_PATH.FRIENDLY_APP_SPACE."/views/";
-
 			
 		$controller_name = strtolower($GLOBALS['controller']['controller_name']);
-
 		
 		#  Allow for ability to set template file in controller
 		if($this->controller->_template_file) {
@@ -289,9 +281,50 @@ class FriendlyMVC {
 		
 		
 		#  Find and render action template
+		$this->render_action($path_to_template,$template_file);
+
+
+		#  Find and render layout
+		if(isset($this->controller->_layout) && $this->controller->_layout)
+			if(file_exists($smarty->template_dir . ($layoutFile = "_layouts/{$this->controller->_layout}.html") )){
+				$smarty->clear_compiled_tpl($layoutFile);
+				$smarty->display($layoutFile);
+			}
+			elseif(file_exists($smarty->template_dir . ($layoutFile = "_layouts/{$controller_name}.html") )) {
+				$smarty->clear_compiled_tpl($layoutFile);
+				$smarty->display($layoutFile);
+			}
+			else
+				raise("The layout <code>$layoutFile</code> could not be found.");
+		elseif(file_exists($smarty->template_dir . ($layoutFile = "_layouts/default.html") )) {
+			$smarty->clear_compiled_tpl($layoutFile);
+			$smarty->display($layoutFile);
+		}
+		else
+			echo $content_for_layout;
+	}
+	
+	
+	function render_action($path_to_template,$template_file){
+		global $cfg;
+		global $smarty;
+		
 		if(file_exists($path_to_template)) {
 			$smarty->clear_compiled_tpl($template_file);
 			$content_for_layout = $smarty->fetch($template_file);
+			$smarty->assign('content_for_layout',$content_for_layout);
+		}
+		elseif(file_exists($_t_path = $path_to_template.".php")) {
+			ob_start();
+			foreach($this->template_vars as $_k => $_v){
+				if(!eval("\$this->{$_k}")){
+					eval("\$this->{$_k} = \$_v;");
+				}
+			}
+			eval("?>".file_get_contents($_t_path));
+			$content_for_layout = ob_get_contents();
+			ob_end_clean();
+			
 			$smarty->assign('content_for_layout',$content_for_layout);
 		}
 		elseif(file_exists($path_to_template.".html")) {
@@ -310,22 +343,6 @@ class FriendlyMVC {
 		else {
 			raise("No template for the action <code>{$_GET['a']}</code>.");
 		}
-
-
-		#  Find and render layout
-		if(isset($this->controller->_layout) && $this->controller->_layout)
-			if(file_exists($smarty->template_dir . ($layoutFile = "_layouts/{$this->controller->_layout}.html") )){
-				$smarty->clear_compiled_tpl($layoutFile);
-				$smarty->display($layoutFile);
-			}
-			elseif(file_exists($smarty->template_dir . ($layoutFile = "_layouts/{$controller_name}.html") )) {
-				$smarty->clear_compiled_tpl($layoutFile);
-				$smarty->display($layoutFile);
-			}
-			else
-				raise("The layout <code>$layoutFile</code> could not be found.");
-		else
-			echo $content_for_layout;
 	}
 	
 }
